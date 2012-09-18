@@ -35,8 +35,12 @@ public class Scanner {
         ScannerClass.scannerHandle = scn.SCNCreate(Boolean.TRUE);
         System.out.println("work - " + ScannerClass.scannerHandle);
 
-        status = scn.SCNGetStatus(ScannerClass.scannerHandle, Pointer.NULL);
-        if (status != 0) {
+        Memory intMem = new Memory(4);  // allocating space
+//        intMem.setInt(0, 666); // setting allocated memory to an integer
+        Pointer intPointer = intMem.getPointer(0);
+        
+        if (scn.SCNGetStatus(ScannerClass.scannerHandle, Pointer.NULL)) {
+            
         System.out.println("status - " + status);
         } else {
             System.out.println("status - not work");
