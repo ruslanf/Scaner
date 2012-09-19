@@ -14,16 +14,19 @@ import com.sun.jna.Pointer;
  */
 public class ScannerClass {
     
-    public static long scannerHandle;
+    public static long scanerHandle;
     
     public interface SCNapi extends Library {
         
-        SCNapi INSTANCE = (SCNapi) Native.loadLibrary("4InRdr.api.dll", SCNapi.class);
+        
+        
+//        SCNapi INSTANCE = (SCNapi) Native.loadLibrary("4InRdr.api.dll", SCNapi.class);
         
         public long SCNCreate(Boolean share);                   // Get Handle of the scanner
-        public Boolean SCNClose(long scannerHandle);            // Close connection with scanner
-        public Boolean SCNGetStatus(long scannerHandle, Pointer status);
-        public Boolean SCNGetFWRelease(long scannerHandle, byte prog, 
+        public Boolean SCNClose(long scanerHandle);             // Close connection with scanner
+        public Boolean SCNGetStatus(long scanerHandle, short[] Status);
+        public Boolean SCNGetFWRelease(long scanerHandle, byte prog, 
                 byte crcVerify, Pointer outBuffer, int outSize, Pointer bytesReturned);
+        public Boolean SCNRunApplication  (long scanerHandle);  // Работает, но надо вначале проинициализировать SCNGetFWRelease
     }
 }
