@@ -15,6 +15,7 @@ import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
+import java.lang.invoke.CallSite;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
@@ -38,30 +39,29 @@ public class Scanner {
         ScannerClass scanerClass = new ScannerClass();
 
         // Get Handle from Scaner
-        ScannerClass.scanerHandle = scn.SCNCreate(Boolean.TRUE);
+        ScannerClass.scanerHandle = scn.SCNCreate(Boolean.FALSE);
         System.out.println("Handle - " + ScannerClass.scanerHandle);
 
-//        short[] Status = new short[1];
-//
-////        System.out.println("SCNgetStatus - " + scn.SCNGetStatus(ScannerClass.scanerHandle, Status));
-//        if (scn.SCNGetStatus(ScannerClass.scanerHandle, Status)) {
-//            System.out.println("SCNgetStatus - " + Status);
-//        } else {
-//            System.out.println("SCNgetStatus - " + Status);
-//        }
-        ByteBuffer Progr = ByteBuffer.allocate(1);
-        Progr.put((byte) 0x00);
-        ByteBuffer CRC = ByteBuffer.allocate(1);
-        CRC.put((byte) 0x00);
+        
+        
+        byte Progr = 0;//allocate(1);
+//        Progr.put((byte) 0x00);
+        byte CRC = 0; //ByteBuffer.allocate(1);
+//        CRC.put((byte) 0x00);
         
 
         try {
             int outSize = 0;
-            Pointer outBuf = new Memory(100);
-            Pointer bytesRet = new Memory(100);
+//            Memory outBuf = new Memory(1000);
+//            Memory bytesRet = new Memory(1000);
+            IntByReference outBuf = new IntByReference();
+            IntByReference bytesRet = new IntByReference();
+            
+
             if (scn.SCNGetFWRelease(ScannerClass.scanerHandle, Progr, CRC, 
-                    outBuf.getPointer(0), outSize, bytesRet.getPointer(0)) != 0) {
-                System.out.println("bytes - " + bytesRet.getString(0));
+                    outBuf, outSize, bytesRet) != 0) {
+//                System.out.println("bytes - " + bytesRet.getString(0));
+                System.out.println("bytes - " + bytesRet.getValue());
             } else {
                 System.out.println("Error SCNGetFWRelease");
             }
@@ -113,6 +113,8 @@ public class Scanner {
         } catch (LastErrorException leEx) {
             System.out.println("Exception: " + leEx.getMessage());
 
+        } catch (Exception ex) {
+            
         }
         // Closed Handle after work with scaner
         if (scn.SCNClose(ScannerClass.scanerHandle) != 0) {
